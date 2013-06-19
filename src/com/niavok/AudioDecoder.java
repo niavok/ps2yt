@@ -1,39 +1,32 @@
 package com.niavok;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
-
+import com.xuggle.xuggler.Global;
 import com.xuggle.xuggler.IAudioSamples;
 import com.xuggle.xuggler.ICodec;
 import com.xuggle.xuggler.IContainer;
+import com.xuggle.xuggler.IError;
 import com.xuggle.xuggler.IPacket;
 import com.xuggle.xuggler.IStream;
 import com.xuggle.xuggler.IStreamCoder;
 
 public class AudioDecoder {
-	/**
-	   * The audio line we'll output sound to; it'll be the default audio device on your system if available
-	   */
-	  private static SourceDataLine mLine;
+	
+	
+	
+	
+	private IContainer container;
+	private int audioStreamId;
+	private IStreamCoder audioCoder;
+	private String filename;
 
-	  /**
-	   * Takes a media container (file) as the first argument, opens it,
-	   * opens up the default audio device on your system, and plays back the audio.
-	   *  
-	   * @param args Must contain one string which represents a filename
-	   */
-	  public static void main(String[] args)
-	  {
-//	    if (args.length <= 0)
-//	      throw new IllegalArgumentException("must pass in a filename as the first argument");
+
+
+
+	public AudioDecoder(String filename) {
+	
 	    
-	    String filename = "test.mp3";
-	    
-	    // Create a Xuggler container object
-	    IContainer container = IContainer.make();
+	    this.filename = filename;
+		container = IContainer.make();
 	    
 	    // Open up the container
 	    if (container.open(filename, IContainer.Type.READ, null) < 0)
@@ -47,9 +40,10 @@ public class AudioDecoder {
 	    
 	    
 	    
-	    // and iterate through the streams to find the first audio stream
-	    int audioStreamId = -1;
-	    IStreamCoder audioCoder = null;
+	    
+	    audioStreamId = -1;
+	    audioCoder = null;
+	    IStream audioStream = null;
 	    for(int i = 0; i < numStreams; i++)
 	    {
 	      // Find the stream object
@@ -60,12 +54,14 @@ public class AudioDecoder {
 	      System.out.println("audio frame size="+coder.getAudioFrameSize());
 	      System.out.println("channels="+coder.getChannels());
 	      System.out.println("sampleRate="+coder.getSampleRate());
+	      System.out.println("timeBase="+coder.getTimeBase().toString());
 	      
 	      
 	      if (coder.getCodecType() == ICodec.Type.CODEC_TYPE_AUDIO)
 	      {
 	        audioStreamId = i;
 	        audioCoder = coder;
+	        audioStream = stream;
 	        break;
 	      }
 	    }
@@ -82,70 +78,122 @@ public class AudioDecoder {
 	    /*
 	     * And once we have that, we ask the Java Sound System to get itself ready.
 	     */
-	    openJavaSound(audioCoder);
+//	    openJavaSound(audioCoder);
 	    
-	    
-	    VideoEncoder videoEncoder = new VideoEncoder();
 	    
 	    
 	    /*
 	     * Now, we start walking through the container looking at each packet.
 	     */
+	    
+	    
+	     
+//	    System.out.println("ret="+ret);
+//	    System.out.println("getReadRetryCount() ="+container.getReadRetryCount() );
+	    
+	    
+	    
+	}
+	
+	public void decodeTo(VideoEncoder videoEncoder) {
+		int packetCount = 0;
+	    long timeCount = 0;
+	    
 	    IPacket packet = IPacket.make();
-	    while(container.readNextPacket(packet) >= 0)
+	    
+	    while(true)
 	    {
+	    	int ret = container.readNextPacket(packet);
+	    	if(ret < 0) {
+	    		System.out.println("Error:" + IError.make(ret).getDescription());
+//	    		break;
+	    		
+//	    		if(ret==-5) {
+	    			break;
+//	    		}
+//	    		continue;
+	    	}
+	    	
 	      /*
 	       * Now we have a packet, let's see if it belongs to our audio stream
 	       */
 	      if (packet.getStreamIndex() == audioStreamId)
 	      {
+	    	  packetCount++;
 	    	  
-	    	  videoEncoder.writeAudioPacket(packet);
+	    	  
+//	    	  System.out.println("#### ------------");
 //	    	  System.out.println("#### Packet timestamp="+packet.getTimeStamp());
+//	    	  System.out.println("####        timeCount="+timeCount);
+	    	  
+	    	  
+	    	  
+	    	  packet.setTimeStamp(timeCount);
+	    	  
+//	    	  videoEncoder.writeAudioPacket(packet);
+	    	  
+	    	  
+	    	  
 //	    	  System.out.println("#### Packet formated timestamp="+packet.getFormattedTimeStamp());
+//			  System.out.println("#### packet.getPosition()="+packet.getPosition());
+	    			  
 //	  		
 	    	  
-//	    	  
-//	        /*
-//	         * We allocate a set of samples with the same number of channels as the
-//	         * coder tells us is in this buffer.
-//	         * 
-//	         * We also pass in a buffer size (1024 in our example), although Xuggler
-//	         * will probably allocate more space than just the 1024 (it's not important why).
-//	         */
-//	        IAudioSamples samples = IAudioSamples.make(1024, audioCoder.getChannels());
-//	        
-//	        /*
-//	         * A packet can actually contain multiple sets of samples (or frames of samples
-//	         * in audio-decoding speak).  So, we may need to call decode audio multiple
-//	         * times at different offsets in the packet's data.  We capture that here.
-//	         */
-//	        int offset = 0;
-//	        
-//	        /*
-//	         * Keep going until we've processed all data
-//	         */
-//	        while(offset < packet.getSize())
-//	        {
-//	          int bytesDecoded = audioCoder.decodeAudio(samples, packet, offset);
-//	          if (bytesDecoded < 0)
-//	            throw new RuntimeException("got error decoding audio in: " + filename);
-//	          offset += bytesDecoded;
-//	          /*
-//	           * Some decoder will consume data in a packet, but will not be able to construct
-//	           * a full set of samples yet.  Therefore you should always check if you
-//	           * got a complete set of samples from the decoder
-//	           */
+	    	  long tsOffset = 0;
+	       
+	    	  
+	    	  
+	        /*
+	         * We allocate a set of samples with the same number of channels as the
+	         * coder tells us is in this buffer.
+	         * 
+	         * We also pass in a buffer size (1024 in our example), although Xuggler
+	         * will probably allocate more space than just the 1024 (it's not important why).
+	         */
+	        IAudioSamples inSamples = IAudioSamples.make(1024, audioCoder.getChannels());
+	        
+	        /*
+	         * A packet can actually contain multiple sets of samples (or frames of samples
+	         * in audio-decoding speak).  So, we may need to call decode audio multiple
+	         * times at different offsets in the packet's data.  We capture that here.
+	         */
+	        int offset = 0;
+	        int retval = 0;
+	        /*
+	         * Keep going until we've processed all data
+	         */
+	        while(offset < packet.getSize())
+	        {
+	          int bytesDecoded = audioCoder.decodeAudio(inSamples, packet, offset);
+	          if (bytesDecoded < 0)
+	            throw new RuntimeException("got error decoding audio in: " + filename);
+	          offset += bytesDecoded;
+	          /*
+	           * Some decoder will consume data in a packet, but will not be able to construct
+	           * a full set of samples yet.  Therefore you should always check if you
+	           * got a complete set of samples from the decoder
+	           */
+	          
+	          
+	          if (inSamples.getTimeStamp() != Global.NO_PTS) {
+	        	  inSamples.setTimeStamp(inSamples.getTimeStamp() - tsOffset);
+	          }
+	          tsOffset = inSamples.getTimeBase().rescale(timeCount, packet.getTimeBase());
+	          inSamples.setTimeStamp(tsOffset);
+	        
+//	          samples.setTimeStamp((long) (timeCount * (packet.getTimeBase().getDouble() / samples.getTimeBase().getDouble() )) );
+	          	          
+//	          System.out.println("#### samples timebase="+samples.getTimeBase());
 //	          System.out.println("#### samples timestamp="+samples.getTimeStamp());
-//	          System.out.println("#### samples formated timestamp="+samples.getFormattedTimeStamp());
-//	          
-//	          
-//	          if (samples.isComplete())
-//	          {
-//	        	  
+//	          System.out.println("#### samples formated timestamp="+inSamples.getFormattedTimeStamp());
+	          
+	          
+	          if (inSamples.isComplete())
+	          {
+	        	videoEncoder.writeAudioSamples(inSamples);  
 //	            playJavaSound(samples);
-//	          }
-//	        }
+	          }
+	        }
 	      }
 	      else
 	      {
@@ -154,8 +202,14 @@ public class AudioDecoder {
 	         */
 	        ;
 	      }
+	      timeCount+=packet.getDuration();
 	      
+//	      ret = container.readNextPacket(packet); 
+//	      System.out.println("ret="+ret);
 	    }
+	    
+	    System.out.println("#### packetCount="+packetCount);
+	    System.out.println("#### timeCount="+timeCount);
 	  
 	  videoEncoder.close();
 	    /*
@@ -163,7 +217,6 @@ public class AudioDecoder {
 	     * the garbage collector... but because we're nice people and want
 	     * to be invited places for Christmas, we're going to show how to clean up.
 	     */
-	    closeJavaSound();
 	    
 	    if (audioCoder != null)
 	    {
@@ -177,56 +230,10 @@ public class AudioDecoder {
 	    }
 	  }
 
-	  private static void openJavaSound(IStreamCoder aAudioCoder)
-	  {
-	    AudioFormat audioFormat = new AudioFormat(aAudioCoder.getSampleRate(),
-	        (int)IAudioSamples.findSampleBitDepth(aAudioCoder.getSampleFormat()),
-	        aAudioCoder.getChannels(),
-	        true, /* xuggler defaults to signed 16 bit samples */
-	        false);
-	    DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-	    try
-	    {
-	      mLine = (SourceDataLine) AudioSystem.getLine(info);
-	      /**
-	       * if that succeeded, try opening the line.
-	       */
-	      mLine.open(audioFormat);
-	      /**
-	       * And if that succeed, start the line.
-	       */
-	      mLine.start();
-	    }
-	    catch (LineUnavailableException e)
-	    {
-	      throw new RuntimeException("could not open audio line");
-	    }
-	    
-	    
-	  }
+	 
+	 
 
-	  private static void playJavaSound(IAudioSamples aSamples)
-	  {
-	    /**
-	     * We're just going to dump all the samples into the line.
-	     */
-	    byte[] rawBytes = aSamples.getData().getByteArray(0, aSamples.getSize());
-	    mLine.write(rawBytes, 0, aSamples.getSize());
-	  }
-
-	  private static void closeJavaSound()
-	  {
-	    if (mLine != null)
-	    {
-	      /*
-	       * Wait for the line to finish playing
-	       */
-	      mLine.drain();
-	      /*
-	       * Close the line.
-	       */
-	      mLine.close();
-	      mLine=null;
-	    }
-	  }
+	public int getSampleRate() {
+		return audioCoder.getSampleRate();
+	}
 }
