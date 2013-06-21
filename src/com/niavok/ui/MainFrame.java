@@ -19,9 +19,10 @@
 package com.niavok.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -53,6 +54,15 @@ public class MainFrame extends JFrame {
 		}
 		
 		setTitle("Podcast Science -> YouTube");
+		
+        BufferedImage image;
+		try {
+			image = ImageIO.read(this.getClass().getResource("podcastscience.png"));
+			setIconImage(image);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		 
 		
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}

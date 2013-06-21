@@ -61,7 +61,6 @@ public class AudioDecoder {
 	    
 	    audioStreamId = -1;
 	    audioCoder = null;
-	    IStream audioStream = null;
 	    for(int i = 0; i < numStreams; i++)
 	    {
 	      // Find the stream object
@@ -79,7 +78,6 @@ public class AudioDecoder {
 	      {
 	        audioStreamId = i;
 	        audioCoder = coder;
-	        audioStream = stream;
 	        break;
 	      }
 	    }
@@ -90,7 +88,7 @@ public class AudioDecoder {
 	     * Now we have found the audio stream in this file.  Let's open up our decoder so it can
 	     * do work.
 	     */
-	    if (audioCoder.open() < 0)
+	    if (audioCoder.open(null,null) < 0)
 	      throw new RuntimeException("could not open audio decoder for container: "+filename);
 	    
 	    /*
@@ -176,7 +174,6 @@ public class AudioDecoder {
 	         * times at different offsets in the packet's data.  We capture that here.
 	         */
 	        int offset = 0;
-	        int retval = 0;
 	        /*
 	         * Keep going until we've processed all data
 	         */

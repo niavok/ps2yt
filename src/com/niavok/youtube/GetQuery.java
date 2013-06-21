@@ -19,7 +19,6 @@
 package com.niavok.youtube;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -33,7 +32,7 @@ public class GetQuery {
 
 	private String request;
 //	private String urlParameters;
-	private String contentType = "application/x-www-form-urlencoded";
+//	private String contentType = "application/x-www-form-urlencoded";
 	private Map<String, String> propertiesMap = new HashMap<String, String>(); 
 
 	public GetQuery(String request, String urlParameters) {

@@ -20,9 +20,7 @@ package com.niavok.youtube;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -36,7 +34,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.niavok.podcastscience.PSTrack;
 import com.niavok.podcastscience.RessourceLoadingException;
 
 public class YoutubeFeed {

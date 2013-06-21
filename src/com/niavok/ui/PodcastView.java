@@ -20,15 +20,11 @@ package com.niavok.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.concurrent.Semaphore;
 
 import javax.swing.BorderFactory;
@@ -45,7 +41,6 @@ import com.niavok.VideoEncoder;
 import com.niavok.podcastscience.PSTrack;
 import com.niavok.youtube.YouTubeChannel;
 import com.niavok.youtube.YoutubeEntry;
-import com.xuggle.mediatool.demos.GenerateAudioAndVideo;
 
 import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;

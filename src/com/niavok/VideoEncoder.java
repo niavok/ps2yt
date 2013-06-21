@@ -18,7 +18,6 @@
  */
 package com.niavok;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -231,7 +230,6 @@ public class VideoEncoder {
 	}
 
 	public VideoEncoder(String outputPath, int sampleRate, int channels) {
-		this.outputPath = outputPath;
 		System.out.println("Compiling an empty stream to "+ outputPath);
 				
 		File outputFile = new File(outputPath);
@@ -329,17 +327,12 @@ public class VideoEncoder {
 	
 	Random rand = new Random();
 
-	private Color color;
-
 	private BufferedImage image;
 
-	private String outputPath;
-	
-	
 	private void writeFrame(int frameId) {
 		System.out.println("writeFrame "+frameId);
 		
-		int offset=frameId % (Math.min(OUTPUT_WIDTH/2, OUTPUT_HEIGHT/2));
+//		int offset=frameId % (Math.min(OUTPUT_WIDTH/2, OUTPUT_HEIGHT/2));
 //		if(offset == 0) {
 //			color = new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat());
 //		}

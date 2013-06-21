@@ -20,8 +20,6 @@ package com.niavok.youtube;
 
 import java.io.File;
 
-import javax.jws.Oneway;
-
 import com.niavok.Config;
 
 
@@ -37,6 +35,7 @@ public class YouTubeChannel {
 	private int expiresIn = 5;
 	private int retryInterval = 5;
 	private String refreshToken;
+	@SuppressWarnings("unused")
 	private String tokenType;
 	private String accessToken = "ya29.AHES6ZTjzcQwz3dspjWO7VGaze4Mi88Ykcp8xo5OZuFMsIbTfiUf8Q";
 	private AuthenticationListener authenticationListener;
