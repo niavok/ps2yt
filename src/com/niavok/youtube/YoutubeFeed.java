@@ -25,12 +25,12 @@ public class YoutubeFeed {
 
 	private static final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 	
-	Map<String,String> urlMap = new HashMap<String,String>();
+	Map<String,YoutubeEntry> entryMap = new HashMap<String,YoutubeEntry>();
+
 	
-	public YoutubeFeed(String feedXml) {
-		
+	public static YoutubeFeed load(String feedXml) {
 		System.out.println(feedXml);
-	
+		
 		try {
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 
@@ -41,7 +41,7 @@ public class YoutubeFeed {
 
             if (root.getNodeName().contains("feed")) {
             	System.out.println("feed found");
-                parseFeed(root);
+                return new YoutubeFeed(root);
             } else {
                 throw new RessourceLoadingException("Unknown tag '"+root.getNodeName()+"'for root");
             }
@@ -53,16 +53,13 @@ public class YoutubeFeed {
             throw new RessourceLoadingException("Failed to parse feed ", e);
         } catch (IOException e) {
             throw new RessourceLoadingException("Failed to load feed", e);
-        }
-	    
+        }	
+		return null;
+	}
+	
+	
+	public YoutubeFeed(Element element) {
 		
-	}
-
-	public boolean isExistNumber(String number) {
-		return urlMap.containsKey(number);
-	}
-
-	private void parseFeed(Element element) {
 		NodeList childNodes = element.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node node = childNodes.item(i);
@@ -72,51 +69,25 @@ public class YoutubeFeed {
             }
             Element subElement = (Element) node;
             if (subElement.getNodeName().equals("entry")) {
-                parseEntry(subElement);
-            }
-        }
-        
-	}
-	
-	private void parseEntry(Element element) {
-		
-		String title = null;
-		String url = "";
-		
-		NodeList childNodes = element.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            Node node = childNodes.item(i);
-            if (node.getNodeType() != Node.ELEMENT_NODE) {
-                // TODO error
-                continue;
-            }
-            Element subElement = (Element) node;
-            if (subElement.getNodeName().equals("title")) {
+                YoutubeEntry entry = new YoutubeEntry(subElement);
+                if(entry != null) {
+                	entryMap.put(entry.getNumber(), entry);
+                }
             	
-            	String textContent = subElement.getTextContent();
-            	String[] split = textContent.split("n°");
-            	if(split.length == 2) {
-            		title = split[1];
-                    
-                    System.out.println("find n°"+split[1]);
-            	}
-            } else if (subElement.getNodeName().equals("link")) {
-            	if(subElement.getAttribute("rel").equals("alternate")) {
-            		url = subElement.getAttribute("href");
-            	}
             }
-            
-            
         }
-        
-        if(title != null) {
-        	urlMap.put(title, url);
-        }
+	    
 		
 	}
 
-	public String getUploadUrl(String number) {
-		return urlMap.get(number);
+	public boolean isExistNumber(String number) {
+		return entryMap.containsKey(number);
 	}
+	
+	public YoutubeEntry getUploadUrl(String number) {
+		return entryMap.get(number);
+	}
+
+	
 	
 }

@@ -48,12 +48,20 @@ public class Config {
 	}
 
 	public static void setAccessToken(String accessToken) {
-		userConfigFile.setProperty("ACCESS_TOKEN", accessToken);
+		if(accessToken == null) {
+			userConfigFile.setProperty("ACCESS_TOKEN", "");
+		} else {
+			userConfigFile.setProperty("ACCESS_TOKEN", accessToken);
+		}
 		save();
 	}
 
 	public static void setRefreshToken(String refreshToken) {
-		userConfigFile.setProperty("REFRESH_TOKEN", refreshToken);
+		if(refreshToken == null) {
+			userConfigFile.setProperty("REFRESH_TOKEN", "");
+		} else {
+			userConfigFile.setProperty("REFRESH_TOKEN", refreshToken);
+		}
 		save();
 	}
 	
@@ -67,6 +75,18 @@ public class Config {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public static int getMaxConcurrentEncode() {
+		return 2;
+	}
+
+	public static int getMaxConcurrentUpload() {
+		return 1;
+	}
+
+	public static int getMaxConcurrentDownload() {
+		return 1;
 	}
 
 	

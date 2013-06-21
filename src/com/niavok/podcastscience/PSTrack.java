@@ -18,6 +18,8 @@ public class PSTrack {
 	private String audioUrl;
 	private String imageUrl;
 	private String simpleTitle;
+	private String description = "";
+	private String paperUrl = "";
 	private String number;
 	private boolean uploaded = false;
 	private String uploadUrl;
@@ -36,6 +38,14 @@ public class PSTrack {
 		simpleTitle =split[1]; 
 		
 		
+	}
+	
+	public void setPaperUrl(String paperUrl) {
+		this.paperUrl = paperUrl;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 	public String getTitle() {
@@ -146,4 +156,11 @@ public class PSTrack {
 		this.uploadUrl = uploadUrl;
 	}
 
+	public String getDescription() {
+		return this.description;
+	}
+
+	public String getPaperUrl() {
+		return paperUrl;
+	}
 }

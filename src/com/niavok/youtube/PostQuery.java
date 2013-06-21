@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,10 +36,11 @@ public class PostQuery {
 			connection.setDoInput(true);
 			connection.setInstanceFollowRedirects(false);
 			connection.setRequestMethod("POST");
+			
 			if(data.length() > 0) {
 				connection.setRequestProperty("Content-Type",
 						contentType);
-				connection.setRequestProperty("charset", "utf-8");
+				connection.setRequestProperty("charset", "UTF-8");
 				connection.setRequestProperty("Content-Length",
 						"" + Integer.toString(data.getBytes().length));
 			} else {
@@ -57,10 +59,24 @@ public class PostQuery {
 			
 			DataOutputStream wr = new DataOutputStream(
 					connection.getOutputStream());
-			wr.writeBytes(data);
+			wr.write(data.getBytes(Charset.forName("UTF-8")));
 			wr.flush();
 			wr.close();
 
+			if(connection.getResponseCode() != 200) {
+				for (int i = 0;; i++) {
+				      String headerName = connection.getHeaderFieldKey(i);
+				      String headerValue = connection.getHeaderField(i);
+				      System.out.println(headerName);
+				      System.out.println(headerValue);
+
+				      if (headerName == null && headerValue == null) {
+//				        System.out.println("No more headers");
+				        break;
+				      }
+			    }
+				return;
+			}
 			
 			for (int i = 0;; i++) {
 			      String headerName = connection.getHeaderFieldKey(i);
@@ -77,6 +93,8 @@ public class PostQuery {
 			    	  location = headerValue;
 			      }
 		    }
+			
+			
 			
 			if (queryOutput != null) {
 

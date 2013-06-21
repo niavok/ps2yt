@@ -212,7 +212,7 @@ public class VideoEncoder {
 		return result;
 	}
 
-	public VideoEncoder(String outputPath, int sampleRate) {
+	public VideoEncoder(String outputPath, int sampleRate, int channels) {
 		this.outputPath = outputPath;
 		System.out.println("Compiling an empty stream to "+ outputPath);
 				
@@ -224,7 +224,7 @@ public class VideoEncoder {
 		container = IContainer.make();
 		container.open(outputPath, IContainer.Type.WRITE, null);
 	
-		initAudioStream(sampleRate);
+		initAudioStream(sampleRate, channels);
 		
 		initVideoStream();
 		
@@ -273,7 +273,7 @@ public class VideoEncoder {
 		videoStreamCoder.open(null, null);
 	}
 
-	private void initAudioStream(int sampleRate) {
+	private void initAudioStream(int sampleRate, int channels) {
 		ICodec audioCodec = ICodec.findEncodingCodec(ICodec.ID.CODEC_ID_MP3);
 		
 		audioStream = container.addNewStream(audioCodec);
@@ -283,7 +283,7 @@ public class VideoEncoder {
 		audioStreamCoder.setCodec(audioCodec);
 		audioStreamCoder.setSampleRate(sampleRate);
 		audioStreamCoder.setBitRate(128000);
-		audioStreamCoder.setChannels(2);
+		audioStreamCoder.setChannels(channels);
 		audioStreamCoder.open(null, null);
 	}
 

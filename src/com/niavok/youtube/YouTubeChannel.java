@@ -107,12 +107,19 @@ public class YouTubeChannel {
 
 
 
-	public void uploadVideo(File videoToUpload) {
-		String urlParameters = "<?xml version=\"1.0\"?><entry xmlns=\"http://www.w3.org/2005/Atom\"  xmlns:media=\"http://search.yahoo.com/mrss/\"  xmlns:yt=\"http://gdata.youtube.com/schemas/2007\">"
-				+ " <media:group>    <media:title type=\"plain\">Bad Wedding Toast</media:title>"
-				+ "<media:description type=\"plain\">      I gave a bad toast at my friend's wedding.    </media:description>"  
-				+ "<media:category      scheme=\"http://gdata.youtube.com/schemas/2007/categories.cat\">People    </media:category>"
-				+"    <media:keywords>toast, wedding</media:keywords>  </media:group></entry>";
+	public YoutubeEntry uploadVideo(File videoToUpload, String title, String description) {
+		
+		System.out.println("Upload video: "+title);
+		
+		String urlParameters = "<?xml version=\"1.0\"?>"
+				+ "  <entry xmlns=\"http://www.w3.org/2005/Atom\"  xmlns:media=\"http://search.yahoo.com/mrss/\"  xmlns:yt=\"http://gdata.youtube.com/schemas/2007\">"
+				+ "    <media:group>"
+				+ "      <media:title type=\"plain\">"+title+"</media:title>"
+				+ "      <media:description type=\"plain\">"+description+"</media:description>"  
+				+ "      <media:category      scheme=\"http://gdata.youtube.com/schemas/2007/categories.cat\">Tech</media:category>"
+				+ "      <media:keywords>mathématiques, sciences, podcast science</media:keywords>"
+				+ "    </media:group>"
+				+ "  </entry>";
 		
 		String request = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
 		
@@ -121,7 +128,7 @@ public class YouTubeChannel {
 		uploadQuery.addProperty("Authorization", "Bearer "+accessToken);
 		uploadQuery.addProperty("GData-Version", "2");
 		uploadQuery.addProperty("X-GData-Key", "key="+DEVELOPER_KEY);
-		uploadQuery.addProperty("Slug", "test.mp4");
+		uploadQuery.addProperty("Slug", videoToUpload.getName());
 		
 	
 		String result = uploadQuery.getTextResult();
@@ -132,7 +139,11 @@ public class YouTubeChannel {
 		
 		PutQuery uploadDataQuery = new PutQuery(location,videoToUpload);
 		result = uploadDataQuery.getTextResult();
+		
 		System.out.println(result);
+		
+		return YoutubeEntry.load(result);
+		
 	
 		
 		
@@ -148,13 +159,14 @@ public class YouTubeChannel {
 		deviceCodeQuery.addProperty("Authorization", "Bearer "+accessToken);
 		
 		String result = deviceCodeQuery.getTextResult();
-		return new YoutubeFeed(result);
+		return YoutubeFeed.load(result);
 	}
 
 
 
 
 	private void authFirstStep() {
+		System.out.println("authFirstStep");
 		String urlParameters = "client_id="+CLIENT_ID+"&scope=https://gdata.youtube.com";
 		String request = "https://accounts.google.com/o/oauth2/device/code";
 		
@@ -177,7 +189,7 @@ public class YouTubeChannel {
 	
 
 	private void authSecondStep() {
-	
+		System.out.println("authSecondStep");
 		String urlParameters = "client_id="+CLIENT_ID+"&client_secret="+CLIENT_SECRET+"&code="+deviceCode+"&grant_type=http://oauth.net/grant_type/device/1.0";
 		String request = "https://accounts.google.com/o/oauth2/token";
 		
@@ -221,6 +233,7 @@ public class YouTubeChannel {
 	}
 
 	private boolean refreshToken() {
+		System.out.println("Refresh token");
 		String urlParameters = "client_id="+CLIENT_ID+"&client_secret="+CLIENT_SECRET+"&refresh_token="+refreshToken+"&grant_type=refresh_token";
 		String request = "https://accounts.google.com/o/oauth2/token";
 		

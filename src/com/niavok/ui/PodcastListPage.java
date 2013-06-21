@@ -39,7 +39,7 @@ public class PodcastListPage extends JPanel {
 		panel.setLayout(new GridLayout(tracks.size(), 1));
 		
 		JScrollPane scrollPane = new JScrollPane(panel);
-		
+		scrollPane.getVerticalScrollBar().setUnitIncrement(64);
 		setPreferredSize(new Dimension(450, 110));
 		
 		
@@ -54,6 +54,7 @@ public class PodcastListPage extends JPanel {
 //			System.out.println("- "+track.getTitle());
 		}
 		
+		
 	}
 
 	private void syncUploadState(List<PSTrack> tracks,
@@ -63,7 +64,7 @@ public class PodcastListPage extends JPanel {
 		for(PSTrack track: tracks) {
 			if(feed.isExistNumber(track.getNumber())) {
 				track.setUploaded(true);
-				track.setUploadUrl(feed.getUploadUrl(track.getNumber()));
+				track.setUploadUrl(feed.getUploadUrl(track.getNumber()).getUrl());
 			}
 		}
 	}

@@ -234,6 +234,13 @@ public class AudioDecoder {
 	 
 
 	public int getSampleRate() {
+		
 		return audioCoder.getSampleRate();
 	}
+	
+	public int getChannels() {
+		return audioCoder.getChannels();
+	}
+	
+	
 }
