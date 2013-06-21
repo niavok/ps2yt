@@ -166,6 +166,7 @@ public class PodcastView extends JPanel {
 					updateStatus(ENCODING);
 					String audioPath = track.getCachedAudioPath();
 
+					try {
 					BufferedImage image = track.getImage();
 
 					AudioDecoder audioDecoder = new AudioDecoder(audioPath);
@@ -173,17 +174,21 @@ public class PodcastView extends JPanel {
 					VideoEncoder videoEncoder = new VideoEncoder(outputPath,
 							audioDecoder.getSampleRate(), audioDecoder.getChannels());
 					videoEncoder.setImage(image);
-					try {
+					
 						audioDecoder.decodeTo(videoEncoder);
+						videoEncoder.close();
+					
+					
+
+					new File(outputPath).renameTo(new File(track
+							.getCachedEncodedPath()));
 					} catch(Exception e) {
+						e.printStackTrace();
 						updateStatus(FAILED);
 						encodeSem.release();
 						return;
 					}
-					videoEncoder.close();
-
-					new File(outputPath).renameTo(new File(track
-							.getCachedEncodedPath()));
+					
 					encodeSem.release();
 					updateStatus(ENCODED);
 				}

@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -78,7 +79,7 @@ public class GetQuery {
 
 				String line;
 				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(connection.getInputStream()));
+						new InputStreamReader(connection.getInputStream(), Charset.forName("UTF-8")));
 
 				while ((line = reader.readLine()) != null) {
 					queryOutput.processLine(line);

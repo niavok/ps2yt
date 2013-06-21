@@ -118,7 +118,7 @@ public class PostQuery {
 
 				String line;
 				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(connection.getInputStream()));
+						new InputStreamReader(connection.getInputStream(), Charset.forName("UTF-8")));
 
 				while ((line = reader.readLine()) != null) {
 					queryOutput.processLine(line);

@@ -54,7 +54,7 @@ public class Main {
 	}
 
 	private static void createCacheDir() {
-		File dir = new File("cache");
+		File dir = new File(Config.getCachePath(""));
 		dir.mkdirs();
 	}
 

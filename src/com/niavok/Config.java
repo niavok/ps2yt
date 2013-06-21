@@ -27,7 +27,7 @@ import java.util.Properties;
 
 public class Config {
 
-	private static final String CACHE_USER_CONF = "cache/user.conf";
+	private static final String CACHE_USER_CONF = ClassLoader.getSystemClassLoader().getResource(".").getPath()+"/cache/user.conf";
 	static Properties configFile;
 	static Properties userConfigFile;
 	
@@ -35,14 +35,28 @@ public class Config {
 		configFile = new Properties();
 		userConfigFile = new Properties();
 		
+
+		
 		try {
-			configFile.load(new FileInputStream(new File("ps2yt.conf")));
+			configFile.load(new FileInputStream(new File(getJarPath()+"/ps2yt.conf")));
 			userConfigFile.load(new FileInputStream(new File(CACHE_USER_CONF)));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		System.out.println("getJarPath() "+getJarPath());
+	}
+	
+	public static String getJarPath() {
+		String absolutePath = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath()).getAbsolutePath();
+		return absolutePath;
+	}
+	
+	
+	public static String getCachePath(String file) {
+		return new File(new File(getJarPath(), "cache"),file).getAbsolutePath();
 	}
 	
 	public static String getYoutubeDeveloperKey() {

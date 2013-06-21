@@ -54,11 +54,14 @@ public class YoutubeEntry {
             if (subElement.getNodeName().equals("title")) {
             	
             	String textContent = subElement.getTextContent();
+            	System.out.println("title="+textContent);
             	String[] split = textContent.split("n°");
             	if(split.length == 2) {
             		
             		number = split[1];
                     System.out.println("find n°"+split[1]);
+            	} else {
+            		System.out.println("fail to find number");
             	}
             } else if (subElement.getNodeName().equals("link")) {
             	if(subElement.getAttribute("rel").equals("alternate")) {

@@ -29,6 +29,8 @@ import java.nio.channels.ReadableByteChannel;
 
 import javax.imageio.ImageIO;
 
+import com.niavok.Config;
+
 public class PSTrack {
 
 	private String title;
@@ -125,11 +127,11 @@ public class PSTrack {
 	}
 
 	public String getCachedAudioPath() {
-		return "cache/"+getId()+".mp3";
+		return Config.getCachePath(getId()+".mp3");
 	}
 	
 	public String getCachedEncodedPath() {
-		return "cache/"+getId()+".mp4";
+		return Config.getCachePath(getId()+".mp4");
 	}
 
 	public String getId() {
