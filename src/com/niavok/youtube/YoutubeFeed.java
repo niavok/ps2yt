@@ -28,7 +28,7 @@ public class YoutubeFeed {
 	Map<String,YoutubeEntry> entryMap = new HashMap<String,YoutubeEntry>();
 
 	
-	public static YoutubeFeed load(String feedXml) {
+	public static int load(YoutubeFeed feed, String feedXml) {
 		System.out.println(feedXml);
 		
 		try {
@@ -41,7 +41,7 @@ public class YoutubeFeed {
 
             if (root.getNodeName().contains("feed")) {
             	System.out.println("feed found");
-                return new YoutubeFeed(root);
+            	return feed.add(root);
             } else {
                 throw new RessourceLoadingException("Unknown tag '"+root.getNodeName()+"'for root");
             }
@@ -54,11 +54,16 @@ public class YoutubeFeed {
         } catch (IOException e) {
             throw new RessourceLoadingException("Failed to load feed", e);
         }	
-		return null;
+		return 0;
 	}
 	
 	
-	public YoutubeFeed(Element element) {
+	public YoutubeFeed() {
+	}
+	
+	public int add(Element element) {
+		
+		int addCount = 0;
 		
 		NodeList childNodes = element.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
@@ -72,11 +77,13 @@ public class YoutubeFeed {
                 YoutubeEntry entry = new YoutubeEntry(subElement);
                 if(entry != null) {
                 	entryMap.put(entry.getNumber(), entry);
+                	addCount++;
                 }
             	
             }
         }
 	    
+        return addCount;
 		
 	}
 

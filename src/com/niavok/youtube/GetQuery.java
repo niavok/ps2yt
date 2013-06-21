@@ -14,13 +14,14 @@ import java.util.Map.Entry;
 public class GetQuery {
 
 	private String request;
-	private String urlParameters;
+//	private String urlParameters;
+	private String contentType = "application/x-www-form-urlencoded";
 	private Map<String, String> propertiesMap = new HashMap<String, String>(); 
 
 	public GetQuery(String request, String urlParameters) {
 		this.request = request;
 		// TODO Auto-generated constructor stub
-		this.urlParameters = urlParameters;
+//		this.urlParameters = urlParameters;
 	}
 
 	private void execute(QueryOutput queryOutput) {
@@ -34,6 +35,15 @@ public class GetQuery {
 			connection.setDoInput(true);
 			connection.setInstanceFollowRedirects(false);
 			connection.setRequestMethod("GET");
+			
+//			if(urlParameters.length() > 0) {
+////				connection.setDoOutput(true);
+//				connection.setRequestProperty("Content-Type",
+//						contentType);
+//				connection.setRequestProperty("charset", "UTF-8");
+//				connection.setRequestProperty("Content-Length",
+//						"" + Integer.toString(urlParameters.getBytes().length));
+//			}
 			
 			for(Entry<String,String> entry: propertiesMap.entrySet()) {
 				connection.addRequestProperty(entry.getKey(), entry.getValue());

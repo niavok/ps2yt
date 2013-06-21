@@ -152,14 +152,40 @@ public class YouTubeChannel {
 
 
 	public YoutubeFeed getFeed() {
-		String urlParameters = "";
-		String request = "http://gdata.youtube.com/feeds/api/users/default/uploads";
 		
-		GetQuery deviceCodeQuery = new GetQuery(request, urlParameters);
-		deviceCodeQuery.addProperty("Authorization", "Bearer "+accessToken);
+		YoutubeFeed feed = new YoutubeFeed();
 		
-		String result = deviceCodeQuery.getTextResult();
-		return YoutubeFeed.load(result);
+		
+		int startIndex = 1;
+		int maxResults = 10;
+		
+		while(true) {
+			System.out.println("Query feed at "+startIndex);
+			
+			String urlParameters = "";
+			String request = "http://gdata.youtube.com/feeds/api/users/default/uploads?start-index="+startIndex+"&max-results="+maxResults;
+			
+			GetQuery deviceCodeQuery = new GetQuery(request, urlParameters);
+			deviceCodeQuery.addProperty("Authorization", "Bearer "+accessToken);
+			
+			String result = deviceCodeQuery.getTextResult();
+		
+			int entryCount = YoutubeFeed.load(feed, result);
+
+			System.out.println("New feed entry: "+entryCount);
+			
+			if(entryCount < maxResults) {
+				break;
+			}
+				
+			startIndex += maxResults;
+		}
+		
+		
+		
+		
+		
+		return feed;
 	}
 
 
