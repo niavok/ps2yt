@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.Semaphore;
 
 import javax.swing.BorderFactory;
@@ -74,6 +75,7 @@ public class PodcastView extends JPanel {
 	private JLabel statusLabel;
 	private JPanel innerPanel;
 	private ActionListener actionListener;
+	private JLabel warningLabel;
 
 	public PodcastView(final PSTrack track) {
 		this.track = track;
@@ -126,7 +128,10 @@ public class PodcastView extends JPanel {
 
 		uploadButton.addActionListener(actionListener);
 		panelBottom.add(uploadButton);
+
+		warningLabel = new JLabel();
 		
+		panelBottom.add(warningLabel);
 		setStatus(status);
 
 		innerPanel.setBorder(BorderFactory
@@ -277,7 +282,36 @@ public class PodcastView extends JPanel {
 	}
 	
 	private String generateOutputTitle() {
-		return track.getSimpleTitle()+" - PS n°"+track.getNumber();
+		
+		int maxSize = 100;
+		String simpleTitle = track.getSimpleTitle();
+		String suffixe = " - PS n°"+track.getNumber();
+		String trucatedTitle = "";
+		
+		//Final size must be at most 100
+		String[] split = simpleTitle.split(" ");
+		for(int i = 0; i < split.length; i++) {
+			String tempTitle = trucatedTitle + (i==0? "": " ") + split[i] + suffixe;
+		
+			try {
+				 byte[]charArray = tempTitle.getBytes("UTF-8");
+				System.out.println("charArray length "+charArray.length);
+				if(charArray.length >=  maxSize) {
+					warningLabel.setText("<html><strong style=\"color:orange;\">Title too long. Truncated.</strong></html>");
+					break;
+				}
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				break;
+			}
+			trucatedTitle += (i==0? "": " ") + split[i];
+		}
+
+		
+		String title = trucatedTitle+suffixe;
+		
+		return title;
 	}
 	
 	protected String generateOutputDescription() {

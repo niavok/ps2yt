@@ -53,9 +53,9 @@ public class PSTrack {
 		id = id.replace("\\", "");
 		
 		
-		String[] split = title.split(" (- )?", 2);
+		String[] split = title.split(" ((-|–) )?", 2);
 		number = split[0];
-		simpleTitle =split[1]; 
+		simpleTitle =split[1];
 		
 		
 	}
