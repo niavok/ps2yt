@@ -25,7 +25,10 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
+import javax.print.attribute.standard.PDLOverrideSupported;
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -37,6 +40,7 @@ import com.niavok.podcast.Podcast;
 import com.niavok.podcast.PodcastManager;
 import com.niavok.podcast.PodcastTrack;
 import com.niavok.youtube.YouTubeChannel;
+import com.niavok.youtube.YoutubeEntry;
 import com.niavok.youtube.YoutubeFeed;
 
 public class PodcastListPage extends JPanel {
@@ -47,9 +51,11 @@ public class PodcastListPage extends JPanel {
 	private static final long serialVersionUID = -22513621390876310L;
 	private MainFrame parent;
 	private JComboBox<String> podcastList;
+	private Podcast podcast;
 
 	public PodcastListPage(MainFrame mainFrame, Podcast podcast) {
 		this.parent = mainFrame;
+		this.podcast = podcast;
 		
 		setLayout(new BorderLayout());
 		
@@ -107,11 +113,13 @@ public class PodcastListPage extends JPanel {
 	private void syncUploadState(List<PodcastTrack> tracks,
 		YouTubeChannel youTubeChannel) {
 		YoutubeFeed feed = youTubeChannel.getFeed();
+		Map<String, YoutubeEntry> entryList = feed.getEntryList(podcast);
+		
 		
 		for(PodcastTrack track: tracks) {
-			if(feed.isExistNumber(track.getNumber())) {
+			if(entryList.containsKey(track.getNumber())) {
 				track.setUploaded(true);
-				track.setUploadUrl(feed.getUploadUrl(track.getNumber()).getUrl());
+				track.setUploadUrl(entryList.get(track.getNumber()).getUrl());
 			}
 		}
 	}

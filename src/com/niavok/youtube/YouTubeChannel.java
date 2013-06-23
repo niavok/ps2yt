@@ -29,6 +29,7 @@ public class YouTubeChannel {
 	private static String DEVELOPER_KEY;
 	private static String CLIENT_ID;
 	private static String CLIENT_SECRET;
+	private static YouTubeChannel instance;
 	private String deviceCode;
 	private String userCode;
 	private String verificationUrl;
@@ -44,7 +45,7 @@ public class YouTubeChannel {
 	private YoutubeFeed feed;
 	
 	
-	public YouTubeChannel() {
+	private YouTubeChannel() {
 		
 		DEVELOPER_KEY = Config.getYoutubeDeveloperKey();
 		CLIENT_ID = Config.getYoutubeClientId();
@@ -160,9 +161,14 @@ public class YouTubeChannel {
 		
 		System.out.println(result);
 		
-		feed = null;
 		
-		return YoutubeEntry.load(result);
+		
+		YoutubeEntry entry = YoutubeEntry.load(result);
+		
+		feed.add(entry);
+				
+		
+		return entry;
 		
 	
 		
@@ -327,6 +333,13 @@ public class YouTubeChannel {
 
 	public boolean isAuthenticated() {
 		return authenticated ;
+	}
+
+	public static YouTubeChannel getInstance() {
+		if(instance == null) {
+			instance = new YouTubeChannel();
+		}
+		return instance;
 	}
 
 	

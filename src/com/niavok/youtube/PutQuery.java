@@ -95,7 +95,7 @@ public class PutQuery {
 			
 			fileInputStream.close();
 			
-			
+				
 			if (queryOutput != null) {
 
 				String line;
@@ -103,6 +103,7 @@ public class PutQuery {
 						new InputStreamReader(connection.getInputStream(), Charset.forName("UTF-8")));
 
 				while ((line = reader.readLine()) != null) {
+//					System.out.println(line);
 					queryOutput.processLine(line);
 				}
 

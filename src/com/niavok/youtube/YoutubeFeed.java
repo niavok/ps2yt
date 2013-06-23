@@ -20,9 +20,15 @@ package com.niavok.youtube;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.print.attribute.standard.PDLOverrideSupported;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -34,13 +40,14 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.niavok.podcast.Podcast;
 import com.niavok.podcast.RessourceLoadingException;
 
 public class YoutubeFeed {
 
 	private static final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 	
-	Map<String,YoutubeEntry> entryMap = new HashMap<String,YoutubeEntry>();
+	List<YoutubeEntry> entryList = new CopyOnWriteArrayList<YoutubeEntry>();
 
 	
 	public static int load(YoutubeFeed feed, String feedXml) {
@@ -91,7 +98,7 @@ public class YoutubeFeed {
             if (subElement.getNodeName().equals("entry")) {
                 YoutubeEntry entry = new YoutubeEntry(subElement);
                 if(entry != null) {
-                	entryMap.put(entry.getNumber(), entry);
+                	entryList.add(entry);
                 	addCount++;
                 }
             	
@@ -102,14 +109,27 @@ public class YoutubeFeed {
 		
 	}
 
-	public boolean isExistNumber(String number) {
-		return entryMap.containsKey(number);
-	}
-	
-	public YoutubeEntry getUploadUrl(String number) {
-		return entryMap.get(number);
+	public Map<String, YoutubeEntry> getEntryList(Podcast podcast) {
+		Map<String, YoutubeEntry> map = new HashMap<String, YoutubeEntry>();
+
+		
+		for(YoutubeEntry entry: entryList) {
+			
+			String number = entry.getNumber(podcast);
+			if(number != null) {
+				map.put(number, entry);
+			}	
+			
+			
+		}
+		
+		return map;
 	}
 
+
+	public void add(YoutubeEntry entry) {
+		entryList.add(entry);
+	}
 	
 	
 }

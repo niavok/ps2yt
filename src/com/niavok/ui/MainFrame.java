@@ -42,7 +42,7 @@ public class MainFrame extends JFrame {
 	
 	public MainFrame() {
 		
-		youTubeChannel = new YouTubeChannel();
+		youTubeChannel = YouTubeChannel.getInstance();
 		getContentPane().setLayout(new BorderLayout());
 		
 		if(youTubeChannel.isAuthenticated()) {

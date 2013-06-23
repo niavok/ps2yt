@@ -205,10 +205,10 @@ public class PodcastView extends JPanel {
 					} catch (InterruptedException e) {
 					}
 					updateStatus(UPLOADING);
-					YouTubeChannel youTubeChannel = new YouTubeChannel();
+					YouTubeChannel youTubeChannel = YouTubeChannel.getInstance();
 					YoutubeEntry uploadVideo = youTubeChannel.uploadVideo(new File(track
 							.getCachedEncodedPath()), generateOutputTitle(), generateOutputDescription());
-					if(uploadVideo != null && uploadVideo.getNumber() != null && uploadVideo.getNumber().equals(track.getNumber())) {
+					if(uploadVideo != null && uploadVideo.getNumber(track.getPodcast()) != null && uploadVideo.getNumber(track.getPodcast()).equals(track.getNumber())) {
 						track.setUploadUrl(uploadVideo.getUrl());
 						updateStatus(UPLOADED);
 					} else {
@@ -301,10 +301,16 @@ public class PodcastView extends JPanel {
 			tempOut = tempOut.replace("{number}", track.getNumber());
 			
 			try {
-				 byte[]charArray = tempTitle.getBytes("UTF-8");
+				 byte[]charArray = tempOut.getBytes("UTF-8");
 				System.out.println("charArray length "+charArray.length);
 				if(charArray.length >=  maxSize) {
-					warningLabel.setText("<html><strong style=\"color:orange;\">Title too long. Truncated.</strong></html>");
+					SwingUtilities.invokeLater(new Runnable() {
+						
+						@Override
+						public void run() {
+							warningLabel.setText("<html><strong style=\"color:orange;\">Title too long. Truncated.</strong></html>");
+						}
+					});
 					break;
 				}
 			} catch (UnsupportedEncodingException e) {

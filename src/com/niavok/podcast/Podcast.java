@@ -68,6 +68,14 @@ public class Podcast {
 		return youtubeOutputTitleFormat;
 	}
 	
+	public Pattern getYoutubeNumberRegex() {
+		return youtubeNumberRegex;
+	}
+	
+	public int getYoutubeNumberRegexIndex() {
+		return youtubeNumberRegexIndex;
+	}
+	
 	public List<PodcastTrack> getTracks() {
 		
 		if(cachedTrackList == null) {

@@ -210,6 +210,10 @@ public class PodcastTrack {
 	public String getDescriptionFormat() {
 		return podcast.getDescriptionFormat();
 	}
+
+	public Podcast getPodcast() {
+		return podcast;
+	}
 	
 	
 }

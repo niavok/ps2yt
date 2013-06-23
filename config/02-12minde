@@ -7,7 +7,7 @@ INPUT_NUMBER_REGEX_INDEX=2
 INPUT_TITLE_REGEX=^(Épisode|Ép) #([^ ]*) – (.*)$
 INPUT_TITLE_REGEX_INDEX=3
 
-YT_NUMBER_REGEX=^(Épisode|Ép) #([^ ]*) – (.*)$
+YT_NUMBER_REGEX=^(Épisode|Ép) #([^ ]*) - (.*)$
 YT_NUMBER_REGEX_INDEX=2
 
 YT_OUTPUT_TITLE_FORMAT=Épisode #{number} - {title}

@@ -20,6 +20,8 @@ package com.niavok.youtube;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,13 +34,14 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.niavok.podcast.Podcast;
 import com.niavok.podcast.RessourceLoadingException;
 
 public class YoutubeEntry {
 
 	private static final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-	private String number;
 	private String url;
+	private String title;
 	
 	
 	public YoutubeEntry(Element element) {
@@ -53,16 +56,8 @@ public class YoutubeEntry {
             Element subElement = (Element) node;
             if (subElement.getNodeName().equals("title")) {
             	
-            	String textContent = subElement.getTextContent();
-            	System.out.println("title="+textContent);
-            	String[] split = textContent.split("n°");
-            	if(split.length == 2) {
-            		
-            		number = split[1];
-                    System.out.println("find n°"+split[1]);
-            	} else {
-            		System.out.println("fail to find number");
-            	}
+            	title = subElement.getTextContent();
+            	
             } else if (subElement.getNodeName().equals("link")) {
             	if(subElement.getAttribute("rel").equals("alternate")) {
             		url = subElement.getAttribute("href");
@@ -102,12 +97,25 @@ public class YoutubeEntry {
 		return null;
 	}
 
-	public String getNumber() {
-		return number;
-	}
-
 	public String getUrl() {
 		return url;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public String getNumber(Podcast podcast) {
+		Pattern youtubeNumberRegex = podcast.getYoutubeNumberRegex();
+		int youtubeNumberRegexIndex = podcast.getYoutubeNumberRegexIndex();
+		
+		Matcher numberMatcher = youtubeNumberRegex.matcher(title);
+		
+		if(numberMatcher.find()) {
+			String number = numberMatcher.group(youtubeNumberRegexIndex);
+			return number;
+		}
+		return null;
 	}
 	
 }
