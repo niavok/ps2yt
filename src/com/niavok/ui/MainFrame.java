@@ -27,6 +27,8 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import com.niavok.Config;
+import com.niavok.podcast.PodcastManager;
 import com.niavok.youtube.YouTubeChannel;
 
 public class MainFrame extends JFrame {
@@ -93,9 +95,9 @@ public class MainFrame extends JFrame {
 		
 		
 	}
-	private void gotoPodcastListPage() {
+	void gotoPodcastListPage() {
 		getContentPane().removeAll();
-		getContentPane().add(new PodcastListPage(this), BorderLayout.CENTER);
+		getContentPane().add(new PodcastListPage(this, PodcastManager.getPodcast(Config.getDefaultPodcast())), BorderLayout.CENTER);
 		pack();
 		setSize(600, 800);
 		centerFrame();

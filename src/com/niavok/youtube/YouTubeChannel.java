@@ -41,6 +41,7 @@ public class YouTubeChannel {
 	private AuthenticationListener authenticationListener;
 	private boolean authenticated = false;
 //	private String accessToken;
+	private YoutubeFeed feed;
 	
 	
 	public YouTubeChannel() {
@@ -159,6 +160,8 @@ public class YouTubeChannel {
 		
 		System.out.println(result);
 		
+		feed = null;
+		
 		return YoutubeEntry.load(result);
 		
 	
@@ -170,35 +173,37 @@ public class YouTubeChannel {
 
 	public YoutubeFeed getFeed() {
 		
-		YoutubeFeed feed = new YoutubeFeed();
+		if(feed == null) {
 		
-		
-		int startIndex = 1;
-		int maxResults = 10;
-		
-		while(true) {
-			System.out.println("Query feed at "+startIndex);
+			feed = new YoutubeFeed();
 			
-			String urlParameters = "";
-			String request = "http://gdata.youtube.com/feeds/api/users/default/uploads?start-index="+startIndex+"&max-results="+maxResults;
 			
-			GetQuery deviceCodeQuery = new GetQuery(request, urlParameters);
-			deviceCodeQuery.addProperty("Authorization", "Bearer "+accessToken);
+			int startIndex = 1;
+			int maxResults = 10;
 			
-			String result = deviceCodeQuery.getTextResult();
-		
-			int entryCount = YoutubeFeed.load(feed, result);
-
-			System.out.println("New feed entry: "+entryCount);
-			
-			if(entryCount < maxResults) {
-				break;
-			}
+			while(true) {
+				System.out.println("Query feed at "+startIndex);
 				
-			startIndex += maxResults;
+				String urlParameters = "";
+				String request = "http://gdata.youtube.com/feeds/api/users/default/uploads?start-index="+startIndex+"&max-results="+maxResults;
+				
+				GetQuery deviceCodeQuery = new GetQuery(request, urlParameters);
+				deviceCodeQuery.addProperty("Authorization", "Bearer "+accessToken);
+				
+				String result = deviceCodeQuery.getTextResult();
+			
+				int entryCount = YoutubeFeed.load(feed, result);
+	
+				System.out.println("New feed entry: "+entryCount);
+				
+				if(entryCount < maxResults) {
+					break;
+				}
+					
+				startIndex += maxResults;
+			}
+		
 		}
-		
-		
 		
 		
 		

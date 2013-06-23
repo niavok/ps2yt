@@ -39,7 +39,7 @@ import javax.swing.border.EtchedBorder;
 import com.niavok.AudioDecoder;
 import com.niavok.Config;
 import com.niavok.VideoEncoder;
-import com.niavok.podcastscience.PSTrack;
+import com.niavok.podcast.PodcastTrack;
 import com.niavok.youtube.YouTubeChannel;
 import com.niavok.youtube.YoutubeEntry;
 
@@ -70,14 +70,14 @@ public class PodcastView extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -1173027143755244884L;
-	private PSTrack track;
+	private PodcastTrack track;
 	private JButton uploadButton;
 	private JLabel statusLabel;
 	private JPanel innerPanel;
 	private ActionListener actionListener;
 	private JLabel warningLabel;
 
-	public PodcastView(final PSTrack track) {
+	public PodcastView(final PodcastTrack track) {
 		this.track = track;
 
 		innerPanel = new JPanel();
@@ -285,14 +285,21 @@ public class PodcastView extends JPanel {
 		
 		int maxSize = 100;
 		String simpleTitle = track.getSimpleTitle();
-		String suffixe = " - PS n°"+track.getNumber();
+		String outputFormat = track.getOutputFormat();
+		
+		
+		
+		
+		
 		String trucatedTitle = "";
 		
 		//Final size must be at most 100
 		String[] split = simpleTitle.split(" ");
 		for(int i = 0; i < split.length; i++) {
-			String tempTitle = trucatedTitle + (i==0? "": " ") + split[i] + suffixe;
-		
+			String tempTitle = trucatedTitle + (i==0? "": " ") + split[i];
+			String tempOut = outputFormat.replace("{title}", tempTitle);
+			tempOut = tempOut.replace("{number}", track.getNumber());
+			
 			try {
 				 byte[]charArray = tempTitle.getBytes("UTF-8");
 				System.out.println("charArray length "+charArray.length);
@@ -308,29 +315,17 @@ public class PodcastView extends JPanel {
 			trucatedTitle += (i==0? "": " ") + split[i];
 		}
 
-		
-		String title = trucatedTitle+suffixe;
+		String title = outputFormat.replace("{title}", trucatedTitle);
+		title = title.replace("{number}", track.getNumber());
 		
 		return title;
 	}
 	
 	protected String generateOutputDescription() {
-		String description = track.getDescription() +
-		"\n" +
-		"Retrouvez le dossier écrit, par ici : "+track.getPaperUrl() +
-		"\n\n\n" +
-		"Podcast science est une émission (audio)" +
-		" hebdomadaire qui parle de science, sans" +
-		" prise de tête. Retrouvez-nous tous les" +
-		" jeudi soirs à 20h30 en" +
-		" live sur http://www.podcastscience.fm/live, ou sur" +
-		" notre site web: http://www.podcastscience.fm, sur" +
-		" iTunes: itpc://feeds.feedburner.com/PodcastScien­ce," +
-		" ou dans votre agrégateur podcast" +
-		" préféré: http://feeds.feedburner.com/PodcastScience" +
-		" Promis, on va vous faire aimer la science !"+
-		"\n\n" +
-		"http://www.podcastscience.fm";
+		
+		String description = track.getDescriptionFormat();
+		description = description.replace("{description}", track.getDescription());
+		description = description.replace("{url}", track.getPaperUrl());
 		
 		return description; 	
 	

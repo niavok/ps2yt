@@ -477,22 +477,24 @@ public class VideoEncoder {
 	public void setImage(BufferedImage inputImage) {
 		image = new BufferedImage(videoStreamCoder.getWidth(),
 				videoStreamCoder.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		Graphics graphics = image.getGraphics();
-
-		float widthRatio = (float)inputImage.getWidth() / (float)videoStreamCoder.getWidth();
-		float heightRatio = (float)inputImage.getHeight() / (float)videoStreamCoder.getHeight();
+		if(inputImage != null) {
 			
-		float ratio = Math.max(widthRatio, heightRatio);
-		
-		int newWidth = (int) (inputImage.getWidth()/ ratio);
-		int newHeight = (int) (inputImage.getHeight() / ratio);
-			
-		int xOffset = (videoStreamCoder.getWidth() - newWidth)/2;
-		int yOffset = (videoStreamCoder.getHeight() - newHeight)/2;
-			
-		graphics.drawImage(inputImage, xOffset, yOffset, newWidth, newHeight, null);	
-		
+			Graphics graphics = image.getGraphics();
+	
+			float widthRatio = (float)inputImage.getWidth() / (float)videoStreamCoder.getWidth();
+			float heightRatio = (float)inputImage.getHeight() / (float)videoStreamCoder.getHeight();
 				
+			float ratio = Math.max(widthRatio, heightRatio);
+			
+			int newWidth = (int) (inputImage.getWidth()/ ratio);
+			int newHeight = (int) (inputImage.getHeight() / ratio);
+				
+			int xOffset = (videoStreamCoder.getWidth() - newWidth)/2;
+			int yOffset = (videoStreamCoder.getHeight() - newHeight)/2;
+				
+			graphics.drawImage(inputImage, xOffset, yOffset, newWidth, newHeight, null);	
+			
+		}
 		
 		
 		

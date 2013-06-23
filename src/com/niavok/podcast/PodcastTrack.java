@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.niavok.podcastscience;
+package com.niavok.podcast;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -26,12 +26,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
 import com.niavok.Config;
 
-public class PSTrack {
+public class PodcastTrack {
 
 	private String title;
 	private String id;
@@ -43,6 +45,11 @@ public class PSTrack {
 	private String number;
 	private boolean uploaded = false;
 	private String uploadUrl;
+	private Podcast podcast;
+
+	public PodcastTrack(Podcast podcast) {
+		this.podcast = podcast;
+	}
 
 	public void setTitle(String title) {
 		this.title = title;
@@ -53,11 +60,19 @@ public class PSTrack {
 		id = id.replace("\\", "");
 		
 		
-		String[] split = title.split(" ((-|–) )?", 2);
-		number = split[0];
-		simpleTitle =split[1];
+		Pattern titlePattern = podcast.getInputTitleRegexPattern();
+		Matcher titleMatcher = titlePattern.matcher(title);
 		
+		if(titleMatcher.find()) {
+			simpleTitle = titleMatcher.group(podcast.getInputTitleRegexIndex());
+		}
 		
+		Pattern numberPattern = podcast.getInputNumberRegexPattern();
+		Matcher numberMatcher = numberPattern.matcher(title);
+		
+		if(numberMatcher.find()) {
+			number = numberMatcher.group(podcast.getInputNumberRegexIndex());
+		}
 	}
 	
 	public void setPaperUrl(String paperUrl) {
@@ -139,6 +154,10 @@ public class PSTrack {
 	}
 
 	public BufferedImage getImage() {
+		if(imageUrl == null) {
+			return null;
+		}
+		
 		try {
 			return ImageIO.read(new URL(imageUrl));
 		} catch (MalformedURLException e) {
@@ -183,4 +202,14 @@ public class PSTrack {
 	public String getPaperUrl() {
 		return paperUrl;
 	}
+
+	public String getOutputFormat() {
+		return podcast.getYoutubeOutputTitleFormat();
+	}
+
+	public String getDescriptionFormat() {
+		return podcast.getDescriptionFormat();
+	}
+	
+	
 }

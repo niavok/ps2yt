@@ -20,16 +20,22 @@ package com.niavok.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import com.niavok.podcastscience.PSManager;
-import com.niavok.podcastscience.PSTrack;
+import com.niavok.Config;
+import com.niavok.podcast.Podcast;
+import com.niavok.podcast.PodcastManager;
+import com.niavok.podcast.PodcastTrack;
 import com.niavok.youtube.YouTubeChannel;
 import com.niavok.youtube.YoutubeFeed;
 
@@ -40,13 +46,14 @@ public class PodcastListPage extends JPanel {
 	 */
 	private static final long serialVersionUID = -22513621390876310L;
 	private MainFrame parent;
+	private JComboBox<String> podcastList;
 
-	public PodcastListPage(MainFrame mainFrame) {
+	public PodcastListPage(MainFrame mainFrame, Podcast podcast) {
 		this.parent = mainFrame;
 		
 		setLayout(new BorderLayout());
 		
-		List<PSTrack> tracks = PSManager.getTracks();
+		List<PodcastTrack> tracks = podcast.getTracks();
 		
 		syncUploadState(tracks, parent.getYouTubeChannel());
 		
@@ -63,11 +70,21 @@ public class PodcastListPage extends JPanel {
 		
 		
 		
+		JPanel podcastSelectionPanel = new JPanel();
+		podcastSelectionPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		
-		add(new JLabel(""+tracks.size()+" épisodes"), BorderLayout.NORTH);
+		String[] podcastNames = PodcastManager.getPodcastNames();
+		podcastList = new JComboBox<String>(podcastNames);
+		podcastList.setSelectedIndex(podcast.getIndex());
+		podcastList.addActionListener(generatePodcastSelectionListener());
+		podcastSelectionPanel.add(podcastList);
+		podcastSelectionPanel.add(new JLabel(""+tracks.size()+" épisodes"));
+		
+		
+		add(podcastSelectionPanel, BorderLayout.NORTH);
 		add(scrollPane, BorderLayout.CENTER);
 		
-		for(PSTrack track: tracks) {
+		for(PodcastTrack track: tracks) {
 			panel.add(new PodcastView(track));
 //			System.out.println("- "+track.getTitle());
 		}
@@ -75,11 +92,23 @@ public class PodcastListPage extends JPanel {
 		
 	}
 
-	private void syncUploadState(List<PSTrack> tracks,
+	private ActionListener generatePodcastSelectionListener() {
+		return new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Seleted "+podcastList.getSelectedIndex());
+				Config.setDefaultPodcast(podcastList.getSelectedIndex());
+				parent.gotoPodcastListPage();
+			}
+		};
+	}
+
+	private void syncUploadState(List<PodcastTrack> tracks,
 		YouTubeChannel youTubeChannel) {
 		YoutubeFeed feed = youTubeChannel.getFeed();
 		
-		for(PSTrack track: tracks) {
+		for(PodcastTrack track: tracks) {
 			if(feed.isExistNumber(track.getNumber())) {
 				track.setUploaded(true);
 				track.setUploadUrl(feed.getUploadUrl(track.getNumber()).getUrl());

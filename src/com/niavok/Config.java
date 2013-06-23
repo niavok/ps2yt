@@ -121,6 +121,30 @@ public class Config {
 		return 1;
 	}
 
+
+	public static String getPodcastUrl() {
+		return configFile.getProperty("PODCAST_URL");
+	}
+
+
+	public static int getDefaultPodcast() {
+		String property = userConfigFile.getProperty("DEFAULT_PODCAST");
+		
+		int defaultPodcast = 0;
+		
+		if(property != null && !property.isEmpty()) {
+			defaultPodcast = Integer.parseInt(property);
+		}
+		
+		return defaultPodcast;
+	}
+
+
+	public static void setDefaultPodcast(int defaultPodcast) {
+		userConfigFile.setProperty("DEFAULT_PODCAST", Integer.toString(defaultPodcast));
+		save();		
+	}
+
 	
 
 }

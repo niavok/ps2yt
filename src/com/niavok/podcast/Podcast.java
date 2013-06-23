@@ -1,29 +1,11 @@
-/* 
- * This file is part of PS2YT
- *
- * Copyright (C) 2013 Frédéric Bertolus (Niavok)
- * 
- * PS2YT is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-package com.niavok.podcastscience;
+package com.niavok.podcast;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,31 +17,74 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class PSManager {
-	
-	private static List<PSTrack> cachedTrackList;
+public class Podcast {
+	private List<PodcastTrack> cachedTrackList;
 	private static final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+	private final String podcastName;
+	private final String podcastUrl;
+	private final Pattern podcastInputTitleRegex;
+	private final Pattern podcastInputNumberRegex;
+	private final String youtubeOutputTitleFormat;
+	private final Pattern youtubeNumberRegex;
+	private int podcastInputTitleRegexIndex;
+	private int podcastInputNumberRegexIndex;
+	private int youtubeNumberRegexIndex;
+	private int index;
+	private String descriptionFormat;
 	
 	
-	public static List<PSTrack> getTracks() {
+	public Podcast(int index, String podcastName,
+			String podcastUrl,
+			String podcastInputTitleRegex,
+			int podcastInputTitleRegexIndex,
+			String podcastInputNumberRegex,
+			int podcastInputNumberRegexIndex,
+			String youtubeOutputTitleFormat,
+			String youtubeNumberRegex,
+			int youtubeNumberRegexIndex,
+			String descriptionFormat) {
+				this.index = index;
+				this.podcastName = podcastName;
+				this.podcastUrl = podcastUrl;
+				this.descriptionFormat = descriptionFormat;
+				this.podcastInputTitleRegex = Pattern.compile(podcastInputTitleRegex);
+				this.podcastInputTitleRegexIndex = podcastInputTitleRegexIndex;
+				this.podcastInputNumberRegex = Pattern.compile(podcastInputNumberRegex);
+				this.podcastInputNumberRegexIndex = podcastInputNumberRegexIndex;
+				this.youtubeOutputTitleFormat = youtubeOutputTitleFormat;
+				this.youtubeNumberRegex = Pattern.compile(youtubeNumberRegex);
+				this.youtubeNumberRegexIndex = youtubeNumberRegexIndex;
+	}
+
+	public String getPodcastName() {
+		return podcastName;
+	}
+	
+	public String getDescriptionFormat() {
+		return descriptionFormat;
+	}
+
+	public String getYoutubeOutputTitleFormat() {
+		return youtubeOutputTitleFormat;
+	}
+	
+	public List<PodcastTrack> getTracks() {
 		
 		if(cachedTrackList == null) {
 			generateList();
 		}
 		return cachedTrackList;
 	}
-		
-		
-	private static void generateList() {
+	
+	private void generateList() {
 
-		cachedTrackList = new ArrayList<PSTrack>();
+		cachedTrackList = new ArrayList<PodcastTrack>();
 
-		String url = "http://feeds.feedburner.com/PodcastScience";
 		URL website;
 		try {
-			website = new URL(url);
+			website = new URL(podcastUrl);
 		} catch (MalformedURLException e) {
-			throw new RessourceLoadingException("Malformed url '" + url, e);
+			throw new RessourceLoadingException("Malformed url '" + podcastUrl, e);
 		}
 	    
 	    
@@ -82,15 +107,15 @@ public class PSManager {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (SAXException e) {
-            throw new RessourceLoadingException("Failed to parse url '" + url, e);
+            throw new RessourceLoadingException("Failed to parse url '" + podcastUrl, e);
         } catch (IOException e) {
-            throw new RessourceLoadingException("Failed to load url '" + url, e);
+            throw new RessourceLoadingException("Failed to load url '" + podcastUrl, e);
         }
 	    
 	}
 
 
-	private static void parseRss(Element element) {
+	private void parseRss(Element element) {
 		NodeList childNodes = element.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node node = childNodes.item(i);
@@ -109,7 +134,7 @@ public class PSManager {
 	}
 
 
-	private static void parseChannel(Element element) {
+	private void parseChannel(Element element) {
 		NodeList childNodes = element.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node node = childNodes.item(i);
@@ -126,8 +151,8 @@ public class PSManager {
 	}
 
 
-	private static void parseItem(Element element) {
-		PSTrack track = new PSTrack();
+	private void parseItem(Element element) {
+		PodcastTrack track = new PodcastTrack(this);
 		cachedTrackList.add(track);
 		
 		NodeList childNodes = element.getChildNodes();
@@ -154,4 +179,27 @@ public class PSManager {
         }
 		
 	}
+
+	public Pattern getInputTitleRegexPattern() {
+		return podcastInputTitleRegex;
+	}
+	
+	
+	public int getInputTitleRegexIndex() {
+		return podcastInputTitleRegexIndex;
+	}
+
+	public Pattern getInputNumberRegexPattern() {
+		return podcastInputNumberRegex;
+	}
+
+	public int getInputNumberRegexIndex() {
+		return podcastInputNumberRegexIndex;
+	}
+
+
+	public int getIndex() {
+		return index;
+	}
+	
 }

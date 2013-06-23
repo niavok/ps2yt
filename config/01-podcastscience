@@ -1,0 +1,23 @@
+PODCAST_NAME=Podcast Sciences
+PODCAST_URL=http://feeds.feedburner.com/PodcastScience
+
+INPUT_NUMBER_REGEX=^([^ ]*) ((-|–) )?(.*)$
+INPUT_NUMBER_REGEX_INDEX=1
+
+INPUT_TITLE_REGEX=^([^ ]*) ((-|–) )?(.*)$
+INPUT_TITLE_REGEX_INDEX=4
+
+
+
+YT_OUTPUT_TITLE_FORMAT={title} - PS n°{number}
+YT_NUMBER_REGEX=^(.*) - PS n°(.*)$
+YT_NUMBER_REGEX_INDEX=2
+
+YT_OUTPUT_DESCRIPTION_FORMAT={description}\n\
+Retrouvez le dossier écrit, par ici:\n\
+{url}\n\
+\n\
+\n\
+Podcast science est une émission (audio) hebdomadaire qui parle de science, sans prise de tête. Retrouvez-nous tous les jeudi soirs à 20h30 en live sur http://www.podcastscience.fm/live, ou sur notre site web: http://www.podcastscience.fm, sur iTunes: itpc://feeds.feedburner.com/PodcastScien­­ce, ou dans votre agrégateur podcast préféré: http://feeds.feedburner.com/PodcastSc... Promis, on va vous faire aimer la science !\n\
+\n\
+http://www.podcastscience.fm

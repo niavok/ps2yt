@@ -1,0 +1,22 @@
+PODCAST_NAME=12 minutes de
+PODCAST_URL=http://feeds.feedburner.com/12minutesdeMP3
+
+INPUT_NUMBER_REGEX=^(Épisode|Ép) #([^ ]*) – (.*)$
+INPUT_NUMBER_REGEX_INDEX=2
+
+INPUT_TITLE_REGEX=^(Épisode|Ép) #([^ ]*) – (.*)$
+INPUT_TITLE_REGEX_INDEX=3
+
+YT_NUMBER_REGEX=^(Épisode|Ép) #([^ ]*) – (.*)$
+YT_NUMBER_REGEX_INDEX=2
+
+YT_OUTPUT_TITLE_FORMAT=Épisode #{number} - {title}
+
+YT_OUTPUT_DESCRIPTION_FORMAT={description}\n\
+\n\
+{url}\n\
+\n\
+\n\
+Vous pouvez vous abonner au podcast : via iTunes http://itunes.apple.com/fr/podcast/12-minutes-de-.../id482495745, via le flux m4a (plus léger que le mp3 et avec illustration et chapitrage éventuel) http://itunes.apple.com/fr/podcast/12-minutes-de-.../id482495745 ou si vous préférez au format mp3 http://feeds.feedburner.com/12minutesdeMP3.\n\
+\n\
+http://12minutesde.com
