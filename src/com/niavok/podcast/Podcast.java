@@ -175,6 +175,8 @@ public class Podcast {
                 track.setTitle(subElement.getTextContent());
             }else if (subElement.getNodeName().equals("itunes:summary")) {
                 track.setDescription(subElement.getTextContent());
+            }else if (subElement.getNodeName().equals("itunes:image")) {
+                track.setImageUrl(subElement.getAttribute("href"));
             }else if (subElement.getNodeName().equals("link")) {
             	track.setPaperUrl(subElement.getTextContent());
             } else if (subElement.getNodeName().equals("media:content")) {

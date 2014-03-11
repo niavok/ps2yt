@@ -130,6 +130,9 @@ public class YouTubeChannel {
 		
 		System.out.println("Upload video: "+title);
 		
+		description = description.replace("<", "&lt;");
+		description = description.replace(">", "&gt;");
+
 		String urlParameters = "<?xml version=\"1.0\"?>"
 				+ "  <entry xmlns=\"http://www.w3.org/2005/Atom\"  xmlns:media=\"http://search.yahoo.com/mrss/\"  xmlns:yt=\"http://gdata.youtube.com/schemas/2007\">"
 				+ "    <media:group>"

@@ -41,6 +41,9 @@ public class PostQuery {
 	public PostQuery(String request, String data) {
 		this.request = request;
 		this.data = data;
+
+		System.out.println("PostQuery request="+request);
+		System.out.println("PostQuery data="+data);
 	}
 
 	private void execute(QueryOutput queryOutput) {
@@ -89,7 +92,7 @@ public class PostQuery {
 				      System.out.println(headerValue);
 
 				      if (headerName == null && headerValue == null) {
-//				        System.out.println("No more headers");
+				        System.out.println("No more headers");
 				        break;
 				      }
 			    }
@@ -99,11 +102,11 @@ public class PostQuery {
 			for (int i = 0;; i++) {
 			      String headerName = connection.getHeaderFieldKey(i);
 			      String headerValue = connection.getHeaderField(i);
-//			      System.out.println(headerName);
-//			      System.out.println(headerValue);
+			      System.out.println(headerName);
+			      System.out.println(headerValue);
 
 			      if (headerName == null && headerValue == null) {
-//			        System.out.println("No more headers");
+			        System.out.println("No more headers");
 			        break;
 			      }
 			      
