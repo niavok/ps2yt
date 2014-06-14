@@ -18,6 +18,8 @@
  */
 package com.niavok;
 
+import com.niavok.podcast.RessourceLoadingException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -27,7 +29,7 @@ import java.util.Properties;
 
 public class Config {
 
-	private static final String CACHE_USER_CONF = ClassLoader.getSystemClassLoader().getResource(".").getPath()+"/cache/user.conf";
+	private static final String CACHE_USER_CONF = getJarPath()+"/cache/user.conf";
 	static Properties configFile;
 	static Properties userConfigFile;
 	
@@ -39,18 +41,21 @@ public class Config {
 		
 		try {
 			configFile.load(new FileInputStream(new File(getJarPath()+"/ps2yt.conf")));
-			userConfigFile.load(new FileInputStream(new File(CACHE_USER_CONF)));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+		} catch (IOException e){
+            throw new RessourceLoadingException("Fail to load config. Abort.", e);
+        }
+
+        try {
+        userConfigFile.load(new FileInputStream(new File(CACHE_USER_CONF)));
+        } catch (IOException e){
+            System.out.println("No cache file yet.");
+        }
+
 		System.out.println("getJarPath() "+getJarPath());
 	}
 	
 	public static String getJarPath() {
-		String absolutePath = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath()).getAbsolutePath();
+		String absolutePath = new File(Config.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getAbsolutePath();
 		return absolutePath;
 	}
 	
